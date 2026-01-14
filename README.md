@@ -23,12 +23,12 @@
 
 ## Dark mode
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b483e547-66fe-415d-9cfa-a9e508e621a0" height="350">
-  <img src="https://github.com/user-attachments/assets/793a8937-df89-460c-a6c7-a1fd49badb02" height="350">
-  <img src="https://github.com/user-attachments/assets/e18f9a19-8cf0-4bac-9752-3684d66e6a3d" height="350" >
-  <img src="https://github.com/user-attachments/assets/ce3210bb-bbce-44c1-94a4-4bb6b83d5de3" height="350" >
-  <img src="https://github.com/user-attachments/assets/b76c585b-3d55-4727-8b5e-b52db135c04e" height="350">
-  <img src="https://github.com/user-attachments/assets/7bf69e7a-5cb7-4609-a89e-b34670ce73eb" height="350" >
+  <img src="https://github.com/user-attachments/assets/b483e547-66fe-415d-9cfa-a9e508e621a0" height="250">
+  <img src="https://github.com/user-attachments/assets/793a8937-df89-460c-a6c7-a1fd49badb02" height="250">
+  <img src="https://github.com/user-attachments/assets/e18f9a19-8cf0-4bac-9752-3684d66e6a3d" height="250" >
+  <img src="https://github.com/user-attachments/assets/ce3210bb-bbce-44c1-94a4-4bb6b83d5de3" height="250" >
+  <img src="https://github.com/user-attachments/assets/b76c585b-3d55-4727-8b5e-b52db135c04e" height="250">
+  <img src="https://github.com/user-attachments/assets/7bf69e7a-5cb7-4609-a89e-b34670ce73eb" height="250" >
 </p>
 
 ---
