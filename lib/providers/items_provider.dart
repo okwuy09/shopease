@@ -1,6 +1,8 @@
 
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
 import '../services/api_service.dart';
@@ -26,6 +28,33 @@ class ItemsProvider with ChangeNotifier {
   final int _limit = 10;
   bool _hasMore = true;
   bool _isLoadingMore = false;
+  
+  // Connectivity
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+
+  ItemsProvider() {
+    _initConnectivityListener();
+  }
+
+  void _initConnectivityListener() {
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((results) {
+      // Check if we have any connection (mobile, wifi, ethernet, etc.)
+      // and if we are in a state that needs refreshing (error or empty)
+      final hasConnection = !results.contains(ConnectivityResult.none);
+      if (hasConnection) {
+        if (_error != null || _items.isEmpty) {
+           debugPrint('Network restored. Retrying fetch...');
+           fetchItems();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
 
   /// Returns the immutable list of items.
   List<ItemModel> get items => _items;
@@ -47,11 +76,18 @@ class ItemsProvider with ChangeNotifier {
   /// Clears existing items and error state before fetching.
   /// Sets [isLoading] to true during the process.
   Future<void> fetchItems() async {
+    // If already loading, don't trigger again (loops prevention)
+    if (_isLoading) return;
+    
     _isLoading = true;
     _error = null;
     _page = 0;
     _hasMore = true;
-    _items = []; // Clear items on refresh
+    // _items = []; // Don't clear immediately on refresh to keep UI stable? 
+    // Actually, for pull-to-refresh we usually want to clear or replace.
+    // If we're retrying from error, valid cache might be there.
+    // Let's decide: If we have items from cache, we keep them until we get new ones.
+    // But if we want to show loading spinner properly, notifyListeners is good.
     notifyListeners();
 
     try {
