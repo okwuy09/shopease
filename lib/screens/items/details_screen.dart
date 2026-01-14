@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/models.dart';
-import '../providers/items_provider.dart';
+import '../../models/models.dart';
+import '../../providers/items_provider.dart';
 import 'create_update_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 

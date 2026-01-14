@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/items_provider.dart';
 import 'providers/theme_provider.dart';
-import 'screens/splash_screen.dart';
+import 'screens/auth/splash_screen.dart';
 
 /// The entry point of the application.
 void main() {

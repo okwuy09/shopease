@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/models.dart';
-import '../providers/items_provider.dart';
-import '../widgets/custom_widgets.dart';
+import '../../models/models.dart';
+import '../../providers/items_provider.dart';
+import '../../widgets/custom_widgets.dart';
 
 class CreateUpdateScreen extends StatefulWidget {
   final ItemModel? item; // null for Create, not-null for Update

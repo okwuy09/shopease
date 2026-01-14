@@ -1,20 +1,20 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import '../widgets/custom_widgets.dart';
-import 'main_screen.dart';
-import 'signup_screen.dart';
+import '../../providers/auth_provider.dart';
+import '../../widgets/custom_widgets.dart';
+import '../dashboard/main_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   
@@ -43,31 +43,34 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _animController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleLogin() async {
+  Future<void> _handleSignUp() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       
-      final success = await authProvider.login(
+      // Simulating signup using login for now
+      bool success = await authProvider.login(
         _emailController.text, 
         _passwordController.text
-      );
+      ); 
 
       if (!mounted) return;
 
       if (success) {
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const MainScreen()),
+          (route) => false,
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Login Failed. Check credentials.'),
+            content: const Text('Sign Up Failed. Try again.'),
             backgroundColor: Colors.red.shade400,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -83,6 +86,15 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: isDark ? Colors.white : Colors.black87),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: Stack(
         children: [
           // 1. Background Gradient
@@ -98,19 +110,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             ),
           ),
           
-          // 2. Decorative elements (optional blobs)
+          // 2. Decorative elements
           Positioned(
-            top: -100,
-            right: -100,
+            bottom: -50,
+            left: -50,
             child: Container(
-              width: 300,
-              height: 300,
+              width: 250,
+              height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Theme.of(context).primaryColor.withOpacity(0.2),
+                color: Theme.of(context).primaryColor.withOpacity(0.15),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.2),
+                    color: Theme.of(context).primaryColor.withOpacity(0.15),
                     blurRadius: 100,
                     spreadRadius: 20,
                   ),
@@ -132,48 +144,47 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Logo / Icon
+                        // Hero Icon Transition
                         Hero(
                           tag: 'auth_logo',
                           child: Container(
-                            height: 100,
-                            width: 100,
+                            height: 80,
+                            width: 80,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Theme.of(context).primaryColor.withOpacity(0.1),
                             ),
                             child: Icon(
-                              Icons.restaurant_menu_rounded,
-                              size: 50,
+                              Icons.person_add_rounded,
+                              size: 40,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
                         ),
                         const SizedBox(height: 24),
                         
-                        // Text
                         Text(
-                          'Shopease',
+                          'Create Account',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
+                            letterSpacing: 1.0,
                             color: isDark ? Colors.white : Colors.black87,
                           ),
                         ),
                         const SizedBox(height: 8),
                          Text(
-                          'Welcome back! Please sign in.',
+                          'Join Shopease and start your journey.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
                             color: isDark ? Colors.grey[400] : Colors.grey[600],
                           ),
                         ),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: 40),
 
-                        // Form Container (Glassmorphismish)
+                        // Form Container (Glassmorphism)
                         ClipRRect(
                           borderRadius: BorderRadius.circular(24),
                           child: BackdropFilter(
@@ -202,6 +213,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                 child: Column(
                                   children: [
                                     CustomTextField(
+                                      controller: _nameController,
+                                      label: 'Full Name',
+                                      prefixIcon: Icons.person_outline,
+                                      validator: (value) => 
+                                          (value == null || value.isEmpty) ? 'Required' : null,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    CustomTextField(
                                       controller: _emailController,
                                       label: 'Email Address',
                                       prefixIcon: Icons.email_outlined,
@@ -218,23 +237,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                       validator: (value) => 
                                           (value == null || value.length < 6) ? 'Min 6 chars' : null,
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: TextButton(
-                                        onPressed: () {}, // TODO: Forgot Password
-                                        child: Text(
-                                          'Forgot Password?',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context).primaryColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
                                     const SizedBox(height: 24),
                                     CustomButton(
-                                      text: 'Sign In',
-                                      onPressed: _handleLogin,
+                                      text: 'Sign Up',
+                                      onPressed: _handleSignUp,
                                       isLoading: isLoading,
                                     ),
                                   ],
@@ -251,23 +257,15 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "New User? ",
+                              "Already have an account? ",
                               style: TextStyle(
                                 color: isDark ? Colors.grey[400] : Colors.grey[600],
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (_, __, ___) => const SignUpScreen(),
-                                    transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-                                  ),
-                                );
-                              },
+                              onTap: () => Navigator.pop(context),
                               child: Text(
-                                'Create Account',
+                                'Sign In',
                                 style: TextStyle(
                                   color: Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.bold,

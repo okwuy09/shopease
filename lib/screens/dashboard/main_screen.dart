@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'dashboard_screen.dart';
-import 'profile_screen.dart';
-import 'create_update_screen.dart';
+import '../profile/profile_screen.dart';
+import '../items/create_update_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

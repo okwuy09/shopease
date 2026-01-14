@@ -1,14 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import '../providers/items_provider.dart';
-import '../providers/theme_provider.dart';
-import '../widgets/dashboard_item_card.dart';
-import 'details_screen.dart';
-import 'create_update_screen.dart';
-import 'items_list_screen.dart';
-import 'notification_screen.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/items_provider.dart';
+import '../../providers/theme_provider.dart';
+import '../../widgets/dashboard_item_card.dart';
+import '../items/details_screen.dart';
+import '../items/create_update_screen.dart';
+import '../items/items_list_screen.dart';
+import '../notifications/notification_screen.dart';
 
 /// The main dashboard screen displayed after login.
 /// 

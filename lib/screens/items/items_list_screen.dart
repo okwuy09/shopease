@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/items_provider.dart';
-import '../widgets/dashboard_item_card.dart';
+import '../../providers/items_provider.dart';
+import '../../widgets/dashboard_item_card.dart';
 import 'details_screen.dart';
 
 /// Screen that displays the full list of items.

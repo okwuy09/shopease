@@ -1,20 +1,20 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import '../widgets/custom_widgets.dart';
-import 'main_screen.dart';
+import '../../providers/auth_provider.dart';
+import '../../widgets/custom_widgets.dart';
+import '../dashboard/main_screen.dart';
+import 'signup_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   
@@ -43,34 +43,31 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _animController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleSignUp() async {
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       
-      // Simulating signup using login for now
-      bool success = await authProvider.login(
+      final success = await authProvider.login(
         _emailController.text, 
         _passwordController.text
-      ); 
+      );
 
       if (!mounted) return;
 
       if (success) {
-        Navigator.of(context).pushAndRemoveUntil(
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const MainScreen()),
-          (route) => false,
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Sign Up Failed. Try again.'),
+            content: const Text('Login Failed. Check credentials.'),
             backgroundColor: Colors.red.shade400,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -86,15 +83,6 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: isDark ? Colors.white : Colors.black87),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
       body: Stack(
         children: [
           // 1. Background Gradient
@@ -110,19 +98,19 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
             ),
           ),
           
-          // 2. Decorative elements
+          // 2. Decorative elements (optional blobs)
           Positioned(
-            bottom: -50,
-            left: -50,
+            top: -100,
+            right: -100,
             child: Container(
-              width: 250,
-              height: 250,
+              width: 300,
+              height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Theme.of(context).primaryColor.withOpacity(0.15),
+                color: Theme.of(context).primaryColor.withOpacity(0.2),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.15),
+                    color: Theme.of(context).primaryColor.withOpacity(0.2),
                     blurRadius: 100,
                     spreadRadius: 20,
                   ),
@@ -144,47 +132,48 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Hero Icon Transition
+                        // Logo / Icon
                         Hero(
                           tag: 'auth_logo',
                           child: Container(
-                            height: 80,
-                            width: 80,
+                            height: 100,
+                            width: 100,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Theme.of(context).primaryColor.withOpacity(0.1),
                             ),
                             child: Icon(
-                              Icons.person_add_rounded,
-                              size: 40,
+                              Icons.restaurant_menu_rounded,
+                              size: 50,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
                         ),
                         const SizedBox(height: 24),
                         
+                        // Text
                         Text(
-                          'Create Account',
+                          'Shopease',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0,
+                            letterSpacing: 1.2,
                             color: isDark ? Colors.white : Colors.black87,
                           ),
                         ),
                         const SizedBox(height: 8),
                          Text(
-                          'Join Shopease and start your journey.',
+                          'Welcome back! Please sign in.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
                             color: isDark ? Colors.grey[400] : Colors.grey[600],
                           ),
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 48),
 
-                        // Form Container (Glassmorphism)
+                        // Form Container (Glassmorphismish)
                         ClipRRect(
                           borderRadius: BorderRadius.circular(24),
                           child: BackdropFilter(
@@ -213,14 +202,6 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                                 child: Column(
                                   children: [
                                     CustomTextField(
-                                      controller: _nameController,
-                                      label: 'Full Name',
-                                      prefixIcon: Icons.person_outline,
-                                      validator: (value) => 
-                                          (value == null || value.isEmpty) ? 'Required' : null,
-                                    ),
-                                    const SizedBox(height: 20),
-                                    CustomTextField(
                                       controller: _emailController,
                                       label: 'Email Address',
                                       prefixIcon: Icons.email_outlined,
@@ -237,10 +218,23 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                                       validator: (value) => 
                                           (value == null || value.length < 6) ? 'Min 6 chars' : null,
                                     ),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton(
+                                        onPressed: () {}, // TODO: Forgot Password
+                                        child: Text(
+                                          'Forgot Password?',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context).primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     const SizedBox(height: 24),
                                     CustomButton(
-                                      text: 'Sign Up',
-                                      onPressed: _handleSignUp,
+                                      text: 'Sign In',
+                                      onPressed: _handleLogin,
                                       isLoading: isLoading,
                                     ),
                                   ],
@@ -257,15 +251,23 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Already have an account? ",
+                              "New User? ",
                               style: TextStyle(
                                 color: isDark ? Colors.grey[400] : Colors.grey[600],
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => Navigator.pop(context),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (_, __, ___) => const SignUpScreen(),
+                                    transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+                                  ),
+                                );
+                              },
                               child: Text(
-                                'Sign In',
+                                'Create Account',
                                 style: TextStyle(
                                   color: Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.bold,
