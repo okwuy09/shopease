@@ -139,80 +139,101 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       builder: (context, auth, _) {
                         final user = auth.user;
                         return Container(
-                          padding: const EdgeInsets.all(12), // Reduced inner from 16 to 12
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.white.withAlpha(13) : Colors.white,
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(color: isDark ? Colors.white.withAlpha(26) : Colors.grey[200]!), 
+                            color: isDark ? Colors.white.withAlpha(10) : Colors.white,
+                            borderRadius: BorderRadius.circular(12), // Reduced border radius
+                            border: Border.all(color: isDark ? Colors.white.withAlpha(20) : Colors.grey[200]!, width: 1), 
                             boxShadow: [
                                BoxShadow(
-                                color: isDark ? Colors.black.withAlpha(51) : Colors.black12,
-                                blurRadius: 16,
-                                offset: const Offset(0, 8),
+                                color: isDark ? Colors.black.withAlpha(40) : Colors.black.withAlpha(10), // Softer shadow
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
                           child: Row(
                             children: [
-                              // Large Avatar
+                              // Avatar
                               Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                                  border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.5), width: 2),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Theme.of(context).primaryColor.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      spreadRadius: 1,
+                                    ),
+                                  ],
                                 ),
                                 child: CircleAvatar(
-                                  radius: 28, // Reduced radius from 30 to 28
-                                  backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
+                                  radius: 26, 
+                                  backgroundColor: isDark ? Colors.grey[800] : Colors.grey[100],
                                   backgroundImage: user?.avatarUrl != null 
                                       ? NetworkImage(user!.avatarUrl!) 
                                       : null,
                                   child: user?.avatarUrl == null 
-                                      ? Icon(Icons.person, size: 28, color: isDark ? Colors.white : Colors.grey[600]) 
+                                      ? Icon(Icons.person, size: 28, color: isDark ? Colors.white70 : Colors.grey[500]) 
                                       : null,
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 16),
                               
                               // Text Details
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      user?.name ?? 'Guest User',
-                                      style: TextStyle(
-                                        color: isDark ? Colors.white : Colors.black87,
-                                        fontSize: 18, // Reduced from 20 to 18
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            user?.name ?? 'Guest User',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: isDark ? Colors.white : Colors.black87,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context).primaryColor.withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(4),
+                                            border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.2)),
+                                          ),
+                                          child: Text(
+                                            'PRO',
+                                            style: TextStyle(
+                                              color: Theme.of(context).primaryColor,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w800,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 2),
+                                    const SizedBox(height: 4),
                                     Text(
-                                      user?.email ?? 'No Email',
+                                      user?.email ?? 'Sign in to access features',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: isDark ? Colors.grey[400] : Colors.grey[600],
-                                        fontSize: 12, // Reduced from 13 to 12
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor.withAlpha(51),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        'Active Member',
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        fontSize: 13, 
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
+                              // Arrow Icon for affordance
+                              Icon(Icons.chevron_right, color: isDark ? Colors.grey[600] : Colors.grey[400]),
                             ],
                           ),
                         );
@@ -314,12 +335,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       );
                     }
                     
-                    // Logic: Always show the newest item (index 0) + 3 random others
+                    // Logic: Always show the newest item (index 0) + 4 random others (Total 5)
                     final allItems = provider.items;
                     final newestItem = allItems.first;
                     final otherItems = allItems.skip(1).toList();
                     
-                    final randomOthers = (otherItems..shuffle()).take(3).toList();
+                    final randomOthers = (otherItems..shuffle()).take(4).toList();
                     final displayItems = [newestItem, ...randomOthers];
                     
                     return SliverPadding(
